@@ -48,11 +48,11 @@ class AppointmentController {
 
     const { provider_id, date } = req.body;
 
-    if (req.userId === provider_id) {
-      return res
-        .status(401)
-        .json({ error: "You can't create an appointment with yourself" });
-    }
+    // if (req.userId === provider_id) {
+    //   return res
+    //     .status(401)
+    //     .json({ error: "You can't create an appointment with yourself" });
+    // }
 
     /**
      * Checking if provider_id is a provider
@@ -89,7 +89,7 @@ class AppointmentController {
     if (checkAvailability) {
       return res
         .status(400)
-        .json({ error: "Appintment date is not available" });
+        .json({ error: "Appointment date is not available" });
     }
 
     const appointment = await Appointment.create({
@@ -125,6 +125,11 @@ class AppointmentController {
           as: "provider",
           attributes: ["name", "email"],
         },
+        {
+          model: User,
+          as: "user",
+          attributes: ["name"],
+        },
       ],
     });
 
@@ -149,7 +154,14 @@ class AppointmentController {
     await Mail.sendMail({
       to: `${appointment.provider.name} <${appointment.provider.email}>`,
       subject: "Agendamento cancelado",
-      text: "Você tem um novo cancelamento",
+      template: "cancellation",
+      context: {
+        provider: appointment.provider.name,
+        user: appointment.user.name,
+        date: format(appointment.date, "'dia' dd 'de' MMMM', às' H:mm'h'", {
+          locale: pt,
+        }),
+      },
     });
 
     return res.json(appointment);
