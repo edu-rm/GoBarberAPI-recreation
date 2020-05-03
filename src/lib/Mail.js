@@ -1,8 +1,8 @@
-import nodemailer from "nodemailer";
-import { resolve } from "path";
-import expHbs from "express-handlebars";
-import nodemailerHbs from "nodemailer-express-handlebars";
-import mailConfig from "../config/mail";
+import nodemailer from 'nodemailer';
+import { resolve } from 'path';
+import expHbs from 'express-handlebars';
+import nodemailerHbs from 'nodemailer-express-handlebars';
+import mailConfig from '../config/mail';
 
 class Mail {
   constructor() {
@@ -17,18 +17,18 @@ class Mail {
   }
 
   configureTemplates() {
-    const viewPath = resolve(__dirname, "..", "app", "views", "emails");
+    const viewPath = resolve(__dirname, '..', 'app', 'views', 'emails');
     this.transporter.use(
-      "compile",
+      'compile',
       nodemailerHbs({
         viewEngine: expHbs.create({
-          layoutsDir: resolve(viewPath, "layouts"),
-          partialsDir: resolve(viewPath, "partials"),
-          defaultLayout: "default",
-          extname: ".hbs",
+          layoutsDir: resolve(viewPath, 'layouts'),
+          partialsDir: resolve(viewPath, 'partials'),
+          defaultLayout: 'default',
+          extname: '.hbs',
         }),
         viewPath,
-        extName: ".hbs",
+        extName: '.hbs',
       })
     );
   }
